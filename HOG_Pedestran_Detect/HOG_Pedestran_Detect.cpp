@@ -8,13 +8,13 @@
 #define FILEPATH "D:\\WorkPlace\\VisualStudio\\HOG_Pedestran_Detect\\HOG_Pedestran_Detect\\Pedestrians64x128\\"
 
 void Train();
-//void Detect();
+void Detect();
 
 int main() {
 
-	Train();
+	//Train();
 
-	//Detect();
+	Detect();
 
 	return 0;
 }
@@ -166,8 +166,120 @@ void Train() {
 	ofile.close();
 }
 
+void Detect() {
+	cv::Mat img;
+	std::ifstream testData(std::string(FILEPATH) + "TestData.txt");
+
+	if (!testData.is_open()) {
+		std::cout << "ERROR: the specified file could not be loaded" << std::endl;
+		return;
+	}
+
+	std::vector<float> detector;
+	std::ifstream fileIn(std::string(FILEPATH) + "HOG_SVM.txt", std::ios::in);
+	float val = 0.0f;
+	while (!fileIn.eof())
+	{
+		fileIn >> val;
+		detector.push_back(val);
+	}
+	fileIn.close();
+
+	//设置HOG
+	cv::HOGDescriptor hog;
+	//hog.setSVMDetector(detector);
+	hog.setSVMDetector(cv::HOGDescriptor::getDefaultPeopleDetector());
+	cv::namedWindow("people detector", 1);
+
+	clock_t begintime, endtime;
+	// 检测图片
+	std::string filename;
+	int total = 0;
+	int loss = 0;
+	for (;;)
+	{
+		begintime = clock();
+		// 读取文件名
+		filename = "";
+		if (testData)
+		{
+			if (!getline(testData, filename))
+				break;
+			if (filename[0] == '#')
+				continue;
+
+			//去掉空格
+			int l = filename.length();
+			while (l > 0 && isspace(filename[l - 1]))
+				--l;
+			filename[l] = '\0';
+			std::cout << "filename:" << filename << std::endl;
+			img = cv::imread(std::string(FILEPATH) + filename);
+			resize(img, img, cv::Size(220, 180));
+		}
+		std::cout << filename << ":" << std::endl;
+		if (!img.data) {
+			continue;
+		}
+
+		fflush(stdout);
+		std::vector<cv::Rect> found, found_filtered;
+		// run the detector with default parameters. to get a higher hit-rate
+		// (and more false alarms, respectively), decrease the hitThreshold and
+		// groupThreshold (set groupThreshold to 0 to turn off the grouping completely).
+		//多尺度检测
+		hog.detectMultiScale(img, found, 0, cv::Size(8, 8), cv::Size(32, 32), 1.05, 2);
+		if (found.empty()) {
+			loss++;
+		}
+		total++;
+
+		size_t i, j;
+		//去掉空间中具有内外包含关系的区域，保留大的
+		for (i = 0; i < found.size(); i++)
+		{
+			cv::Rect r = found[i];
+			for (j = 0; j < found.size(); j++)
+				if (j != i && (r & found[j]) == r)
+					break;
+			if (j == found.size())
+				found_filtered.push_back(r);
+		}
+
+		// 适当缩小矩形
+		for (i = 0; i < found_filtered.size(); i++)
+		{
+			cv::Rect r = found_filtered[i];
+			// the HOG detector returns slightly larger rectangles than the real objects.
+			// so we slightly shrink the rectangles to get a nicer output.
+			r.x += cvRound(r.width * 0.1);
+			r.width = cvRound(r.width * 0.8);
+			r.y += cvRound(r.height * 0.07);
+			r.height = cvRound(r.height * 0.8);
+			rectangle(img, r.tl(), r.br(), cv::Scalar(0, 255, 0), 3);
+		}
+
+		imshow("people detector", img);
+
+		endtime = clock();
+		std::cout << "Time : " << ((double)endtime - (double)begintime) / CLOCKS_PER_SEC << " s" << std::endl;
+
+		int c = cv::waitKey(1) & 255;
+		if (c == 'q' || c == 'Q' || !testData) {
+			break;
+		}		
+	}
+	std::cout << "total: " << total << std::endl;
+	std::cout << "loss: " << loss << std::endl;
+	if (testData){
+		testData.close();
+	}
+	return;
+}
+
 void printImgPath(const std::vector<std::string> &path) {
 	for (int i = 0; i < path.size(); i++) {
 		std::cout << path[i] << std::endl;
 	}
 }
+
