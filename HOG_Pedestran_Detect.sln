@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Mat_Test", "Mat_Test\Mat_Te
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Gamma校正", "Gamma校正\Gamma校正.vcxproj", "{1188F3E3-9CFA-4776-8C90-5AB458E5D834}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SVM_Test", "SVM_Test\SVM_Test.vcxproj", "{5A5307D2-E736-41A4-9EF2-EBDE32C59BFF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -51,6 +53,14 @@ Global
 		{1188F3E3-9CFA-4776-8C90-5AB458E5D834}.Release|x64.Build.0 = Release|x64
 		{1188F3E3-9CFA-4776-8C90-5AB458E5D834}.Release|x86.ActiveCfg = Release|Win32
 		{1188F3E3-9CFA-4776-8C90-5AB458E5D834}.Release|x86.Build.0 = Release|Win32
+		{5A5307D2-E736-41A4-9EF2-EBDE32C59BFF}.Debug|x64.ActiveCfg = Debug|x64
+		{5A5307D2-E736-41A4-9EF2-EBDE32C59BFF}.Debug|x64.Build.0 = Debug|x64
+		{5A5307D2-E736-41A4-9EF2-EBDE32C59BFF}.Debug|x86.ActiveCfg = Debug|Win32
+		{5A5307D2-E736-41A4-9EF2-EBDE32C59BFF}.Debug|x86.Build.0 = Debug|Win32
+		{5A5307D2-E736-41A4-9EF2-EBDE32C59BFF}.Release|x64.ActiveCfg = Release|x64
+		{5A5307D2-E736-41A4-9EF2-EBDE32C59BFF}.Release|x64.Build.0 = Release|x64
+		{5A5307D2-E736-41A4-9EF2-EBDE32C59BFF}.Release|x86.ActiveCfg = Release|Win32
+		{5A5307D2-E736-41A4-9EF2-EBDE32C59BFF}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
